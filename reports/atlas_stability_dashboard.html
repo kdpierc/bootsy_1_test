@@ -273,37 +273,29 @@
     <td><span class="badge ${stClass(stat)}">${stat}</span></td>
     <td class="text-xs">${risk}</td></tr>`).join('');
 
-  // KPI Health Data
+  // KPI Health Data — Technical Infrastructure KPIs (updated May 7 2026)
   const kpiData = [
-    { cat:'🛒 Category 1: Order Fulfillment Health', desc:'Is Atlas creating and dropping orders correctly?', kpis:[
-      { name:'EDF Order Drop %', status:'red', tickets:'SAGLS-10262, 10261, 10260, 10259...', detail:'40+ tickets/day of orders stuck in ACKNOWLEDGED — never dropping to wave/release. Chronic state machine bug.' },
-      { name:'Outs + Atlas SSTK Orders Created', status:'amber', tickets:'NMS-11972', detail:'Priority not updating for replenishment moves at DC 6085 — directly causes standing stock outs.' },
-      { name:'Bypassed Orders', status:'red', tickets:'SAGLS-10262 series (2,118 total)', detail:'Stuck-acknowledged orders are effectively bypassing the normal Atlas wave/release flow entirely.' },
-      { name:'% DA Cases Received w/ Active Pick Order', status:'amber', tickets:'IUF-36994', detail:'Container creation not happening after receiving at CL 6003 — DA cases not getting picks created.' },
-      { name:'% XDK Cases Transmitted w/ Active Pick Order', status:'amber', tickets:'NMS-11932', detail:'XDK2 picks sending wrong cartonization sequence 9998 for non-marine stores.' },
+    { cat:'🗄️ Category 1: Database Health', desc:'Is Atlas DB infrastructure healthy and properly maintained?', kpis:[
+      { name:'DB Purge Setup', threshold:'Purge must run on schedule', status:'amber', tickets:'STRSQLSDO-81753', detail:'Intelligrated ASAP DB at 99.99% capacity — strongly suggests purge jobs are not configured or not running. No evidence of scheduled purge in Jira.' },
+      { name:'Monitoring of DB Purges', threshold:'Purge completes successfully each cycle', status:'amber', tickets:'STRSQLSDO-81753, GLSMAV-85884', detail:'No confirmed purge monitoring in place. GDM performance degradation with Kafka may be related to data accumulation from missed purges.' },
+      { name:'Cell Planning (≤3 sites per cell)', threshold:'Max 3 sites per cell', status:'red', tickets:'RRE-43373', detail:'High CPU at Cell005 flagged as PREALERT. Over-allocation of sites per cell is a likely contributor to CPU spikes and instability.' },
+      { name:'Size of Dataset vs. DB Size', threshold:'Dataset must stay within safe DB capacity', status:'red', tickets:'STRSQLSDO-81753', detail:'Intelligrated ASAP DB at 99.99% — dataset has consumed virtually all available DB capacity. Immediate risk of DB failure.' },
+      { name:'CPU Utilization', threshold:'TBD — alert on spikes / sustained high usage', status:'red', tickets:'RRE-43373, NMS-11957', detail:'Two active CPU alerts: Atlas Receiving High CPU at Cell005 (PREALERT) and Endgame Inbound CPU spiking to 100% at regular intervals at Auto GDC 8348.' },
+      { name:'DB Storage Utilization', threshold:'⚠️ Alert at 70%', status:'red', tickets:'STRSQLSDO-81753', detail:'Intelligrated ASAP DB SQLSYS at 99.99% — far beyond the 70% alert threshold. This is a production emergency risk.' },
+      { name:'Timing of Update Stat', threshold:'Must run during off-peak window only', status:'none', tickets:'No Jira evidence found', detail:'No tickets found referencing update stat scheduling issues. Needs BigQuery/monitoring data to verify off-peak compliance.' },
+      { name:'DB Connection Pool', threshold:'TBD — alert on pool exhaustion / wait spikes', status:'amber', tickets:'IUF-37011, SAGLS alerts', detail:'Generic \'Please try again or contact supervisor\' errors during receiving and SAGLS connection alerts suggest intermittent pool exhaustion.' },
     ]},
-    { cat:'📦 Category 2: Inventory Integrity', desc:'Does Atlas know where inventory actually is?', kpis:[
-      { name:'EI vs. Atlas Variance', status:'red', tickets:'SUPPCHIN-87988', detail:'Stale Laminar FC Atlas inventory flagged as data quality issue — BLOCKED, no resolution.' },
-      { name:'# Hung Allocations (Allocated w/o Picks)', status:'red', tickets:'NMS-11935', detail:'DC 2470 full pull moves with duplicate WHPKs = inventory allocated but picks not created. Classic hung allocation pattern.' },
-      { name:'# Outs by Reason', status:'amber', tickets:'NMS-11972, NMS-11957', detail:'Replen moves not created + Endgame CPU spikes are both generating outs. Multiple root causes in flight.' },
+    { cat:'⚡ Category 2: System Availability & Messaging', desc:'Is Atlas up and are messages flowing correctly?', kpis:[
+      { name:'Availability', threshold:'TBD — any unplanned downtime is critical', status:'red', tickets:'IUF-37005, RRE-43373, GLSMAV-87123', detail:'Active availability failures: Vocollect Order Filling completely down at PDC7088 CA, High CPU impacting Cell005, DC 3930 unable to process gate-out. Multiple DCs partially degraded.' },
+      { name:'Kafka Messaging Monitoring', threshold:'Zero message routing errors / consumer lag within SLA', status:'red', tickets:'GLSMAV-87131, GLSMAV-85884, BLACKBIRD-2304', detail:'Hawkeye routing outbound trailer events to wrong Kafka topic (GLSMAV-87131). GDM performance degradation on Kafka (GLSMAV-85884, open months). BLACKBIRD-2304 dispatch work order 500 errors in messaging flow.' },
     ]},
-    { cat:'🤖 Category 3: Automation & Integration Health', desc:'Is Atlas talking correctly to all downstream systems?', kpis:[
-      { name:'% Automation Containers Inducted vs. PAC\'d', status:'red', tickets:'BLACKBIRD-2304', detail:'HUB fails to create Dispatch Work Order after CINE event — 500 error blocking Symbotic induction flow.' },
-      { name:'% Picks Transmitted to SYM (Symbotic)', status:'red', tickets:'NMS-11657', detail:'OF sending picks labeled as \'Manual\' instead of \'SYM\' — Symbotic not receiving correct pick system designation.' },
-      { name:'% BP Picks Transmitted to Intelligrated', status:'red', tickets:'NMS-9930', detail:'OF sending duplicate PUTs to Intelligrated at RDC — double messages causing pick errors. Open 60+ days.' },
-      { name:'% Voice Picks Transmitted to Honeywell', status:'amber', tickets:'IUF-34455', detail:'Missing voice prompt \'Opening Container\' in Honeywell pick flow — affects associate experience and pick confirmation.' },
-      { name:'% MOCC Messages Honored (SYM)', status:'amber', tickets:'BLACKBIRD-2326, BLACKBIRD-2327', detail:'WES→WCS contract changes in-flight — MOCC message handling is at risk during transition.' },
-      { name:'% Repack Close Messages Honored (Intelligrated)', status:'amber', tickets:'GLSMAV-87125', detail:'SHORE ASN generation failing even after trailer departed from Sortation — close messages not propagating.' },
-      { name:'% Pallet Close Messages Honored (Honeywell)', status:'red', tickets:'GLSMAV-87131', detail:'Hawkeye posting outbound trailer door open/close events to incorrect Kafka topic — Honeywell not receiving.' },
-    ]},
-    { cat:'💰 Category 4: Financial & Invoice Reconciliation', desc:'Is what Atlas says we shipped matching what we invoiced?', kpis:[
-      { name:'GRS vs. Atlas Loaded vs. Invoiced', status:'red', tickets:'GLSMAV-86977, GLSMAV-86849', detail:'Invoices not being generated for Dematic flow. \'Create Invoice\' button disabled in UI. DC 6001 affected.' },
-      { name:'In Transit vs. Invoiced', status:'red', tickets:'NMS-9064', detail:'Invoice Processing Issue (weekend incident) open 60+ days with no resolution. Financial gap unresolved.' },
-      { name:'Invoice % Variance', status:'red', tickets:'DC 6001 + DC 6938 (8 GLSMAV bugs)', detail:'Same OSDR→DCFin→SAP pipeline broken at two separate DCs. Platform-level code defect causing variance.' },
-      { name:'Account Health (True Ups, Rewrites, Voids, Shipvoids)', status:'red', tickets:'GLSMAV-86927, GLSMAV-86805', detail:'OSDR received quantities incorrect in GDIS messages → bad SAP journal entries → account corrections needed.' },
+    { cat:'🚨 Category 3: Incident Operations', desc:'Are incidents being managed and quantified effectively?', kpis:[
+      { name:'Incident Response Runbooks', threshold:'Runbook must exist for every known P1/P2 incident type', status:'none', tickets:'Needs Confluence check', detail:'No Jira evidence of runbook gaps. Recommend running a Confluence search to verify runbooks exist for DB capacity, Kafka failures, CPU spikes, and availability incidents.' },
+      { name:'Control Tower — Incidents per DC by Categorization', threshold:'Spike at any DC or new category emerging = alert', status:'red', tickets:'DC 2470 (141), DC 6001 (12+), DC 2675 (10+), DC 7401 (14), SAGLS (40+/day)', detail:'Clear incident clustering by DC. Top hotspots: DC 2470 GDC Breakpack (141 tickets, 5 categories), DC 6001 Finance pipeline (12+ same issue), SAGLS 40+ stuck-order incidents daily. Categorization: DB (storage/CPU), Messaging (Kafka), Availability, Finance integration.' },
+      { name:'Incident Impact Quantification', threshold:'Every P1 must have documented business impact', status:'amber', tickets:'IUF-37005, STRSQLSDO-81753, GLSMAV-87123', detail:'Ticket counts exist but formal impact quantification (cases affected, DC downtime duration, revenue impact) is not captured in Jira. IUF-37005: entire DC OF capability down. STRSQLSDO-81753: DB at 99.99% = imminent data loss risk. Impact fields need to be added to P1 ticket template.' },
     ]},
   ];
-  const statusColor = s => s==='red'?'var(--wmt-red)':s==='amber'?'var(--wmt-spark)':s==='green'?'var(--wmt-green)':'#aaa';
+  const statusColor = s => s==='red'?'var(--wmt-red)':s==='amber'?'var(--wmt-spark)':s==='green'?'var(--wmt-green)':s==='none'?'#aaa':'#aaa';
   const statusLabel = s => s==='red'?'At Risk':s==='amber'?'Watch':s==='green'?'Healthy':'No Data';
   const statusBg = s => s==='red'?'#fde8e8':s==='amber'?'var(--wmt-warn-bg)':s==='green'?'#e8f5e3':'#f5f5f5';
   document.getElementById('kpiCategories').innerHTML = kpiData.map(({cat,desc,kpis})=>`

@@ -134,48 +134,38 @@ Every issue should capture the following fields:
 
 ## 📊 KPI Health Measures — Organized by Category
 
-### 🛒 Category 1: Order Fulfillment Health
-*Is Atlas creating and dropping orders correctly?*
+> *Updated May 7, 2026 — replaced original business KPIs with technical infrastructure KPIs*
 
-| KPI | What It Measures | Alert If... |
-|-----|-----------------|-------------|
-| EDF Order Drop % | % of EDF orders successfully dropped into Atlas | Drop below threshold |
-| Outs + Atlas SSTK Orders Created | Standing stock orders created vs. outs | High outs with low SSTK creation |
-| Bypassed Orders | Orders that skipped normal Atlas flow | Any significant volume |
-| % of DA Cases Received w/ active pick order | Direct Allocation cases received properly tied to picks | % drops |
-| % of XDK Cases Transmitted w/ active pick order | Cross-dock cases transmitted with valid pick orders | % drops |
+### 🗄️ Category 1: Database Health
+*Is Atlas DB infrastructure healthy and properly maintained?*
 
-### 📦 Category 2: Inventory Integrity
-*Does Atlas know where inventory actually is?*
+| KPI | What It Measures | Threshold / Alert If... |
+|-----|-----------------|------------------------|
+| DB Purge Setup | Are DB purge jobs configured and running on schedule? | Purge not executed in expected window |
+| Monitoring of DB Purges | Did the purge complete successfully? How much data was removed? | Purge fails or removes < expected volume |
+| Cell Planning | No more than 3 sites per cell | Any cell exceeds 3 sites |
+| Size of Dataset vs. DB Size | Dataset size as % of total DB capacity | Dataset approaching capacity limits |
+| CPU Utilization | Processing power consumed by Atlas DB workloads | TBD — spikes / sustained high usage |
+| DB Storage Utilization | % of DB storage consumed | **Alert at 70%** |
+| Timing of Update Stat | Are DB statistics updates running in off-peak windows? | Update stat runs during peak DC operating hours |
+| DB Connection Pool | Available vs. used connections in the pool | Pool exhaustion / connection wait times spike |
 
-| KPI | What It Measures | Alert If... |
-|-----|-----------------|-------------|
-| EI vs. Atlas | External Inventory system count vs. Atlas count | Variance grows |
-| # of Hung Allocations (Inventory Allocated w/o Picks Created) | Inventory allocated in Atlas but no picks created | Count increases |
-| # of Outs by Reason | Stockouts broken down by root cause | Spike in any reason |
+### ⚡ Category 2: System Availability & Messaging
+*Is Atlas up and are messages flowing correctly?*
 
-### 🤖 Category 3: Automation & Systems Integration Health
-*Is Atlas talking correctly to all downstream systems?*
+| KPI | What It Measures | Threshold / Alert If... |
+|-----|-----------------|------------------------|
+| Availability | Atlas system uptime % across all DCs | TBD — any unplanned downtime |
+| Kafka Messaging Monitoring | Message throughput, lag, consumer group health across Kafka brokers | Consumer lag grows / messages not consumed |
 
-| KPI | What It Measures | Alert If... |
-|-----|-----------------|-------------|
-| % of Automation Containers Inducted vs. PAC'd | Containers successfully inducted into automation | % drops |
-| % of Automation Picks created in Atlas, transmitted to SYM | Atlas picks transmitted to SYM (Symbotic) | % drops |
-| % of BP Picks created in Atlas transmitted to Intelligrated | Break Pack picks transmitted to Intelligrated | % drops |
-| % of Voice Picks created in Atlas transmitted to Honeywell | Voice picks transmitted to Honeywell | % drops |
-| % of MOCC Messages Honored by Atlas (SYM) | Atlas honoring MOCC messages from Symbotic | % drops |
-| % of Repack Close Messages Honored by Atlas (Intelligrated) | Atlas honoring Repack Close from Intelligrated | % drops |
-| % of Pallet Close Messages Honored by Atlas (Honeywell) | Atlas honoring Pallet Close from Honeywell | % drops |
+### 🚨 Category 3: Incident Operations
+*Are incidents being managed and quantified effectively?*
 
-### 💰 Category 4: Financial & Invoice Reconciliation
-*Is what Atlas says we shipped matching what we invoiced?*
-
-| KPI | What It Measures | Alert If... |
-|-----|-----------------|-------------|
-| GRS vs. Atlas Loaded vs. Invoiced | Gross Receipts vs. what Atlas loaded vs. invoiced | Variance grows |
-| In Transit vs. Invoiced | Cases in transit vs. invoiced cases | Gap widens |
-| Invoice % Variance | % difference between expected and actual invoices | Exceeds threshold |
-| Account Health (True Ups, Rewrites, Voids, Shipvoids) | Volume of account corrections needed | Any spike |
+| KPI | What It Measures | Threshold / Alert If... |
+|-----|-----------------|------------------------|
+| Incident Response Runbooks | Are runbooks documented, current, and accessible for all known incident types? | Missing runbook for any P1/P2 incident type |
+| Control Tower — Incidents per DC by Categorization | Volume of incidents per DC broken down by category (DB, Kafka, Availability, etc.) | Spike at any DC / new category emerging |
+| Incident Impact Quantification | Business impact of each incident (cases affected, DCs down, duration) | TBD — any unquantified P1 incident |
 
 ---
 
