@@ -351,6 +351,17 @@ Every issue should capture the following fields:
 ## ✅ Next Steps (Pick Up Here!)
 
 ### Immediate (Waiting On):
+- [ ] **BQ Access — ServiceNow Incidents** → join AD group `gcp-ww-cip-public-read`
+  - Request: [wmlink/cipaccess](https://wmlink.wal-mart.com/cipaccess) → select *"ServiceNow Non HR (Incident, Problem, Change Request...)"
+  - Table: `wmt-gdap-cip-prod.WW_HR_CIP_DL_VW.HR_ASSOC_INVTG_INCIDENT`
+  - Help: Slack `#_io_public` | Office Hours: **Tues 10 AM CST**
+- [ ] **BQ Access — Control Tower** → join AD group `gcp-sc-control-tower-reader`
+  - Dataset: `wmt-gdap-sc-sca.CONTROL_TOWER`
+  - Help: Slack `#help_osa` | Email: `csii_controltower@email.wal-mart.com`
+- [ ] **BQ Access — Atlas SCT Ops** → join AD group `gcp-supply-chain-atlas-reader`
+  - Dataset: `wmt-edw-prod.US_SUPPLY_CHAIN_ATLAS_SCT_NONCAT_VM`
+- [ ] **Pete CID** → [wmlink/pete](https://wmlink/pete) → Create Credential ID (alternative DB path)
+- [ ] **Pete DB Connection** → [wmlink/pete](https://wmlink/pete) → DB Connection List → search `servicenow` or `itsm`
 - [ ] **Get BigQuery access confirmed** — Ask manager what GCP project/datasets are available
 - [ ] **Get GCP project name(s)** — Need exact project ID to search BigQuery
 - [ ] **Confirm Google account setup** — Walmart email linked to GCP?
