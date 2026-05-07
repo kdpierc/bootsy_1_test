@@ -306,6 +306,48 @@ Every issue should capture the following fields:
 
 ---
 
+## 🔴 COE Post-Mortem Library — Key Incidents
+
+> *Pulled from Confluence GT/HAW/STRSQLSDO spaces — May 7, 2026. These are real Atlas production failures.*
+
+### 📊 Incident Scorecard
+
+| # | Incident | Date | DCs Down | Duration | Root Cause | Alert Caught? |
+|---|----------|------|----------|----------|------------|---------------|
+| 1 | Atlas 3-DC Outage | Dec 1, 2025 | DC6010, 6020, 6024 (~650 associates) | 198 min | Dev Cosmos DB credential left in prod; secret rotation broke pod startups | ❌ No — field reported |
+| 2 | 10-DC Order Fill Down | Jun 18, 2025 | 10 Grocery DCs / cell011 (847 associates) | 309 min | API call inside open DB transaction + runaway item-item transfer loop | ⚠️ Partial (30-min lag) |
+| 3 | Kafka Consumer Lag — RDC | Oct 10, 2025 | RDC 6025, 6039 | ~6 hrs | Large Kafka messages + single-tenant service + zero lag alerts | ❌ No — site reported |
+| 4 | DB CPU/Blocking Sessions | Feb 24, 2026 | 8 GDCs / cell001 | ~42 min | Guardrail job querying deprecated SQL system objects; auto-stats disabled | ✅ Grafana |
+| 5 | High CPU — Atlas GDC | Jun 10, 2025 | Multiple cell012 GDCs | ~2 hrs | Query plan drift on `outbox_event` table (auto-stats disabled/mismatched) | ✅ DBA monitoring |
+
+**Total financial impact (COE #2 alone):** $77,890 in wage loss · 178,717 productive minutes lost
+
+---
+
+### 🔁 Recurring Patterns (Cross-COE Analysis)
+
+| Pattern | COEs | Implication for KPI Monitoring |
+|---------|------|--------------------------------|
+| DB CPU >95% + blocking sessions → DCs down | #2, #4, #5 | Monitor DB CPU%, blocking session count, worker threads **per cell DB** |
+| API calls made inside open DB transactions | #2, #4 | Code fix in progress (AI-1); watch for recurrence on new releases |
+| Email-only alerts missed — field reported first | #1, #2, #3 | All tier-0/1 alerts must route to **Xmatter/pager**, not just email |
+| Leftover dev configs / stale architecture in prod | #1, #3 | Regular audits of prod→non-prod connections and service topology |
+| New DC migration/onboarding triggered incident | #2 | Heightened monitoring window required for any DC onboarding event |
+| Cascading failures: one slow API → whole cell down | #2, #4 | Cross-component dependency health visibility needed in dashboards |
+| Secret rotation not handled gracefully | #1, #4 | Full **DCS-W** adoption required across all Atlas prod apps |
+
+---
+
+### 🔑 Highest-Value Monitoring Signals (from COE Action Items)
+
+1. **DB CPU% + blocking sessions + worker thread count** per cell/DB — leading indicator for DCs going down
+2. **Kafka consumer lag per topic** — zero lag alerts existed for 3 critical topics before Oct 2025 incident
+3. **Pod crash loop / restart detection** → Xmatter page (not just email)
+4. **Cross-component API health** — surface Inventory/Location API slowdowns on OF dashboard *before* blocking sessions accumulate
+5. **Maintenance job schedule consistency** — Cell 001 DB was impacted 3x in 2 months due to inconsistent purge/stats schedules vs. other cells
+
+---
+
 ## ✅ Next Steps (Pick Up Here!)
 
 ### Immediate (Waiting On):
