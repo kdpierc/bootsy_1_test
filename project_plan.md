@@ -19,6 +19,95 @@
 
 ---
 
+## 🏗️ Systems Architecture & Inventory Lifecycle
+
+> *Researched via Walmart Confluence (HAW space) — Day 3 of onboarding*
+
+### How a Piece of Inventory Travels Through Atlas
+
+#### 📥 Step 1: Receiving (Inbound)
+```
+Supplier ships → ASN published to Atlas (GDM → ASN_INBOUND_TOPIC)
+  ↓
+UWMS Receiving validates ASN → hands off to automation (Symbotic or Witron)
+  ↓
+Receiving confirmation → Inventory Server Cloud
+  ↓
+Putaway task created → Worker confirms → Inventory record created in Atlas
+```
+
+#### 📦 Step 2: Inventory Lives in Atlas
+- Atlas **Inventory Server Cloud** holds real-time inventory using Event Sourcing + CQRS
+- Knows exactly where every item is, quantity, and status
+- Cached in Redis for fast lookups (L1: Caffeine 10s TTL → L2: Redis 5min TTL)
+- Auto-releases reservations after 30 min if order not fulfilled
+
+#### 🛒 Step 3: Order Comes In (Allocation)
+```
+Customer order arrives → Allocation Service reserves inventory
+  ↓
+Pick request created → sent to Hawkeye WCS (automation middleman)
+  ↓
+Hawkeye routes to the right automation system:
+  ├── Symbotic (SYM)      → robotic AS/RS systems
+  ├── Intelligrated        → Pick-to-Light / Voice Pick
+  └── Honeywell            → Voice picking
+```
+
+#### 🚚 Step 4: Pick → Pack → Ship
+```
+Automation confirms picks back to Atlas via Kafka
+  ↓
+Container loaded → Watcher system tracks loading events
+  ↓
+YMS (Yard Management) gate-out → Order marked COMPLETE ✅
+  ↓
+DC-Fin / SAP → Financial reconciliation (GRS vs. invoiced)
+```
+
+### 🔌 Key Systems That Integrate with Atlas
+
+| System | Role | Integration Method |
+|--------|------|-------------------|
+| **Hawkeye WCS** | Central traffic cop — orchestrates all automation | Kafka |
+| **Symbotic (SYM)** | Robotic AS/RS storage & retrieval (DC 6020 pilot) | Kafka via Hawkeye |
+| **Intelligrated** | Pick-to-Light, Voice Pick, sortation | SFTP flat-file → migrating to MQ |
+| **Honeywell** | Voice picking systems | Kafka via Hawkeye |
+| **GDM** | Sends ASNs (what's inbound) | Kafka |
+| **DD (Direct Delivery)** | Cross-dock allocation at SDCs | Kafka (async) |
+| **DC-Fin / SAP** | Financial & invoice reconciliation | Kafka → REST API |
+| **SLIP** | Middleware: translates new Kafka events → legacy GLS flat files | Apache Camel microservices |
+| **Witron** | Automated conveyor & palletizing (GDC facilities) | Hawkeye |
+| **Grey Orange** | Autonomous Mobile Robots (AMRs) | Hawkeye |
+
+### 🚌 Key Kafka Brokers
+
+| Broker | Purpose |
+|--------|---------|
+| **Atlas** | Primary inter-service communication |
+| **Hawkeye** | WCS / automation system integration |
+| **Watcher** | Loading and gate operations |
+| **Optima** | Transportation and trip management |
+
+### 📚 Key Confluence Pages (Bookmark These!)
+
+| Topic | Link | Space |
+|-------|------|-------|
+| Atlas WMS System Overview | [🔗](https://confluence.walmart.com/display/HAW/Atlas+WMS+System+Overview) | HAW |
+| Walmart Order Lifecycle E2E | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=3426766207) | CPGSCOPE |
+| Atlas Inventory Server Cloud | [🔗](https://confluence.walmart.com/display/HAW/Atlas+Inventory+Server+Cloud) | HAW |
+| Atlas UWMS Receiving | [🔗](https://confluence.walmart.com/display/HAW/Atlas+UWMS+Receiving) | HAW |
+| Atlas Allocation Order Service | [🔗](https://confluence.walmart.com/display/HAW/Atlas+Allocation+Order+Service) | HAW |
+| Atlas NDOF Trip Execution (FES) | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=3508289978) | HAW |
+| Atlas Kafka Topics Index | [🔗](https://confluence.walmart.com/display/HAW/Atlas+Kafka+Topics+Index) | HAW |
+| Atlas WMS @ RDC (Symbotic pilot) | [🔗](https://confluence.walmart.com/display/SCTA/Atlas+WMS+@+RDC) | SCTA |
+| Intelligrated Integration Details | [🔗](https://confluence.walmart.com/display/SCHI/3.+INTELLIGRATED) | SCHI |
+| SLIP Integration Platform | [🔗](https://confluence.walmart.com/display/SASCTA/SLIP+-+Supply+Chain+Logistics+Integration+Platform) | SASCTA |
+| DD ↔ WMS (Atlas) Integration | [🔗](https://confluence.walmart.com/display/SASCTA/DD+-+WMS+%28Atlas%29+Integration) | SASCTA |
+| Atlas Deployment Methodology | [🔗](https://confluence.walmart.com/display/HAW/Atlas+Deployment+Methodology) | HAW |
+
+---
+
 ## 🗂️ Issue Tracking Fields (Master Issue Log)
 
 Every issue should capture the following fields:
@@ -148,10 +237,12 @@ https://github.com/kdpierc/bootsy_1_test/blob/main/project_plan.md
 My local repo is at: /Users/kpierc1/bootsy_1_test
 
 Here is a summary of where we left off:
-- I am on the Supply Chain Technology Operations team at Walmart (new employee, day 3)
+- I am on the Supply Chain Technology Operations team at Walmart (new employee, ~Day 3)
 - We are building an Atlas WMS stability tracking system
 - We set up this GitHub repo to store queries, KPI trackers, and issue logs
-- I was waiting to hear from my manager about BigQuery/GCP access
+- We researched Atlas architecture via Confluence — see the Systems Architecture section
+  in project_plan.md for full inventory lifecycle, systems integrations, and Kafka topics
+- I was waiting on BigQuery/GCP access (getting a 400 error — IT needs to provision it)
 - Once I have BigQuery access confirmed, next step is to search for Atlas, ServiceNow,
   Jira, and supply chain data in BigQuery
 - See the project_plan.md file for full KPI list, issue tracking fields, and next steps
@@ -165,5 +256,5 @@ Let the agent know:
 
 ---
 
-*Last Updated: Day 3 of onboarding*
+*Last Updated: Day 3 of onboarding — added Systems Architecture & Inventory Lifecycle section*
 *GitHub Repo: https://github.com/kdpierc/bootsy_1_test*
