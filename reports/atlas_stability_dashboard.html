@@ -84,6 +84,7 @@
     <div class="nav-tab" onclick="showTab('chronic')">🔁 Chronic Issues</div>
     <div class="nav-tab" onclick="showTab('stale')">🧟 Stale Bugs</div>
     <div class="nav-tab" onclick="showTab('actions')">📋 Actions</div>
+    <div class="nav-tab" onclick="showTab('kpi')">🎯 KPI Health</div>
   </div>
 
   <!-- TAB: OVERVIEW -->
@@ -153,6 +154,19 @@
   <div id="tab-actions" class="tab-panel bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
     <p class="font-semibold mb-3" style="color:var(--wmt-blue)">📋 Recommended Actions for Leadership</p>
     <div class="space-y-3" id="actionCards"></div>
+  </div>
+
+  <!-- TAB: KPI HEALTH -->
+  <div id="tab-kpi" class="tab-panel bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
+    <p class="font-semibold mb-1" style="color:var(--wmt-blue)">🎯 KPI Health — Mapped to Jira Evidence</p>
+    <p class="text-xs text-gray-500 mb-4">Each KPI is mapped to real Jira ticket evidence. Status reflects what the tickets are telling us right now — before BigQuery access. Once GCP/ServiceNow access is confirmed, these will be backed by real metric data.</p>
+    <div class="flex gap-4 text-xs mb-4">
+      <span class="flex items-center gap-1"><span style="width:12px;height:12px;border-radius:50%;background:var(--wmt-red);display:inline-block"></span> At Risk — Active Jira evidence of failure</span>
+      <span class="flex items-center gap-1"><span style="width:12px;height:12px;border-radius:50%;background:var(--wmt-spark);display:inline-block"></span> Watch — Partial or emerging evidence</span>
+      <span class="flex items-center gap-1"><span style="width:12px;height:12px;border-radius:50%;background:var(--wmt-green);display:inline-block"></span> No Issues — No Jira evidence found</span>
+      <span class="flex items-center gap-1"><span style="width:12px;height:12px;border-radius:50%;background:#aaa;display:inline-block"></span> No Data — Needs BigQuery/ServiceNow</span>
+    </div>
+    <div id="kpiCategories" class="space-y-5"></div>
   </div>
 
   <p class="text-xs text-center text-gray-400 mb-6">Atlas WMS Stability Dashboard &nbsp;|&nbsp; Supply Chain Technology Ops &nbsp;|&nbsp; Source: Jira Deep Dive Analysis &nbsp;|&nbsp; <span id="ts2"></span></p>
@@ -258,6 +272,56 @@
     <td class="text-xs">${sum}</td><td class="text-xs font-semibold">${age}</td>
     <td><span class="badge ${stClass(stat)}">${stat}</span></td>
     <td class="text-xs">${risk}</td></tr>`).join('');
+
+  // KPI Health Data
+  const kpiData = [
+    { cat:'🛒 Category 1: Order Fulfillment Health', desc:'Is Atlas creating and dropping orders correctly?', kpis:[
+      { name:'EDF Order Drop %', status:'red', tickets:'SAGLS-10262, 10261, 10260, 10259...', detail:'40+ tickets/day of orders stuck in ACKNOWLEDGED — never dropping to wave/release. Chronic state machine bug.' },
+      { name:'Outs + Atlas SSTK Orders Created', status:'amber', tickets:'NMS-11972', detail:'Priority not updating for replenishment moves at DC 6085 — directly causes standing stock outs.' },
+      { name:'Bypassed Orders', status:'red', tickets:'SAGLS-10262 series (2,118 total)', detail:'Stuck-acknowledged orders are effectively bypassing the normal Atlas wave/release flow entirely.' },
+      { name:'% DA Cases Received w/ Active Pick Order', status:'amber', tickets:'IUF-36994', detail:'Container creation not happening after receiving at CL 6003 — DA cases not getting picks created.' },
+      { name:'% XDK Cases Transmitted w/ Active Pick Order', status:'amber', tickets:'NMS-11932', detail:'XDK2 picks sending wrong cartonization sequence 9998 for non-marine stores.' },
+    ]},
+    { cat:'📦 Category 2: Inventory Integrity', desc:'Does Atlas know where inventory actually is?', kpis:[
+      { name:'EI vs. Atlas Variance', status:'red', tickets:'SUPPCHIN-87988', detail:'Stale Laminar FC Atlas inventory flagged as data quality issue — BLOCKED, no resolution.' },
+      { name:'# Hung Allocations (Allocated w/o Picks)', status:'red', tickets:'NMS-11935', detail:'DC 2470 full pull moves with duplicate WHPKs = inventory allocated but picks not created. Classic hung allocation pattern.' },
+      { name:'# Outs by Reason', status:'amber', tickets:'NMS-11972, NMS-11957', detail:'Replen moves not created + Endgame CPU spikes are both generating outs. Multiple root causes in flight.' },
+    ]},
+    { cat:'🤖 Category 3: Automation & Integration Health', desc:'Is Atlas talking correctly to all downstream systems?', kpis:[
+      { name:'% Automation Containers Inducted vs. PAC\'d', status:'red', tickets:'BLACKBIRD-2304', detail:'HUB fails to create Dispatch Work Order after CINE event — 500 error blocking Symbotic induction flow.' },
+      { name:'% Picks Transmitted to SYM (Symbotic)', status:'red', tickets:'NMS-11657', detail:'OF sending picks labeled as \'Manual\' instead of \'SYM\' — Symbotic not receiving correct pick system designation.' },
+      { name:'% BP Picks Transmitted to Intelligrated', status:'red', tickets:'NMS-9930', detail:'OF sending duplicate PUTs to Intelligrated at RDC — double messages causing pick errors. Open 60+ days.' },
+      { name:'% Voice Picks Transmitted to Honeywell', status:'amber', tickets:'IUF-34455', detail:'Missing voice prompt \'Opening Container\' in Honeywell pick flow — affects associate experience and pick confirmation.' },
+      { name:'% MOCC Messages Honored (SYM)', status:'amber', tickets:'BLACKBIRD-2326, BLACKBIRD-2327', detail:'WES→WCS contract changes in-flight — MOCC message handling is at risk during transition.' },
+      { name:'% Repack Close Messages Honored (Intelligrated)', status:'amber', tickets:'GLSMAV-87125', detail:'SHORE ASN generation failing even after trailer departed from Sortation — close messages not propagating.' },
+      { name:'% Pallet Close Messages Honored (Honeywell)', status:'red', tickets:'GLSMAV-87131', detail:'Hawkeye posting outbound trailer door open/close events to incorrect Kafka topic — Honeywell not receiving.' },
+    ]},
+    { cat:'💰 Category 4: Financial & Invoice Reconciliation', desc:'Is what Atlas says we shipped matching what we invoiced?', kpis:[
+      { name:'GRS vs. Atlas Loaded vs. Invoiced', status:'red', tickets:'GLSMAV-86977, GLSMAV-86849', detail:'Invoices not being generated for Dematic flow. \'Create Invoice\' button disabled in UI. DC 6001 affected.' },
+      { name:'In Transit vs. Invoiced', status:'red', tickets:'NMS-9064', detail:'Invoice Processing Issue (weekend incident) open 60+ days with no resolution. Financial gap unresolved.' },
+      { name:'Invoice % Variance', status:'red', tickets:'DC 6001 + DC 6938 (8 GLSMAV bugs)', detail:'Same OSDR→DCFin→SAP pipeline broken at two separate DCs. Platform-level code defect causing variance.' },
+      { name:'Account Health (True Ups, Rewrites, Voids, Shipvoids)', status:'red', tickets:'GLSMAV-86927, GLSMAV-86805', detail:'OSDR received quantities incorrect in GDIS messages → bad SAP journal entries → account corrections needed.' },
+    ]},
+  ];
+  const statusColor = s => s==='red'?'var(--wmt-red)':s==='amber'?'var(--wmt-spark)':s==='green'?'var(--wmt-green)':'#aaa';
+  const statusLabel = s => s==='red'?'At Risk':s==='amber'?'Watch':s==='green'?'Healthy':'No Data';
+  const statusBg = s => s==='red'?'#fde8e8':s==='amber'?'var(--wmt-warn-bg)':s==='green'?'#e8f5e3':'#f5f5f5';
+  document.getElementById('kpiCategories').innerHTML = kpiData.map(({cat,desc,kpis})=>`
+    <div>
+      <p class="font-bold text-sm mb-1" style="color:var(--wmt-blue)">${cat}</p>
+      <p class="text-xs text-gray-500 mb-2 italic">${desc}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        ${kpis.map(({name,status,tickets,detail})=>`
+          <div class="rounded-lg p-3" style="background:${statusBg(status)};border-left:4px solid ${statusColor(status)}">
+            <div class="flex items-center justify-between mb-1">
+              <p class="font-semibold text-xs">${name}</p>
+              <span class="badge" style="background:${statusColor(status)};color:white">${statusLabel(status)}</span>
+            </div>
+            <p class="text-xs text-gray-700 mb-1">${detail}</p>
+            <p class="text-xs font-mono" style="color:var(--wmt-blue)">🎫 ${tickets}</p>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
 
   // Action Cards
   const actions = [
