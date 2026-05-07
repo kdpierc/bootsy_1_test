@@ -216,6 +216,96 @@ Every issue should capture the following fields:
 
 ---
 
+## 📚 Runbooks & Operational Documentation
+
+> *Researched via Confluence — May 7, 2026. 80+ pages found across HAW, SCTA, LAIE, NIMAUT, GLSNIM, STRSQLSDO spaces.*
+
+### 🔑 Start Here — Primary SRE & Operational Runbooks
+
+| Title | Space | Link |
+|-------|-------|------|
+| ATLAS SRE Runbook | NIMAUT | [🔗](https://confluence.walmart.com/display/NIMAUT/ATLAS+SRE+runbook) |
+| Alert Runbook | ATLASRCV | [🔗](https://confluence.walmart.com/display/ATLASRCV/Alert+Runbook) |
+| Atlas RDC Runbook | SCTA | [🔗](https://confluence.walmart.com/display/SCTA/Atlas+RDC+Runbook) |
+| Daily Monitoring Runbooks | SCTA | [🔗](https://confluence.walmart.com/display/SCTA/Daily+Monitoring+Runbooks) |
+| Atlas Major Incidents Tracker | NIMAUT | [🔗](https://confluence.walmart.com/display/NIMAUT/Atlas+Major+Incidents) |
+| ATLAS DB Support Model V2.0 | NIMAUT | [🔗](https://confluence.walmart.com/display/NIMAUT/ATLAS+DB+Support+Model+V2.0) |
+| Runbook & KT Recordings Index (all verticals) | LAIE | [🔗](https://confluence.walmart.com/display/LAIE/Runbook+And+KT+Recordings) |
+| SCT On-Call Roles and Responsibility | SUPPLYCH | [🔗](https://confluence.walmart.com/display/SUPPLYCH/SCT+On-Call+Roles+and+Responsibility) |
+
+---
+
+### 🗄️ KPI 1: DB Purge Runbooks
+
+| Title | Space | Link |
+|-------|-------|------|
+| Database Purge Overview | AWMS | [🔗](https://confluence.walmart.com/display/AWMS/Database+Purge+Overview) |
+| ADR-017: DB Purge for Atlas Applications | AWMS | [🔗](https://confluence.walmart.com/display/AWMS/ADR-017.+DB+Purge+for+Atlas+applications) |
+| ATLAS Intl DB Purge | GLSNIM | [🔗](https://confluence.walmart.com/display/GLSNIM/ATLAS+Intl+DB+Purge) |
+| DB Purge — shore-services | GLSNIM | [🔗](https://confluence.walmart.com/display/GLSNIM/DB+Purge+-+shore-services) |
+| DB Purge — Hawkeye-intl | GLSNIM | [🔗](https://confluence.walmart.com/display/GLSNIM/DB+Purge+-+Hawkeye-intl) |
+| SDC Atlas Inventory DB Purge | SEAPS | [🔗](https://confluence.walmart.com/display/SEAPS/SDC+Atlas+Inventory+DB+Purge) |
+| Atlas Database Incidents/Alerts (since 06/2024) | — | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=2589930575) |
+
+### 🏛️ KPI 2: Cell Planning Architecture
+
+| Title | Space | Link |
+|-------|-------|------|
+| Atlas GDC Cell Architecture | AG | [🔗](https://confluence.walmart.com/display/AG/Atlas+GDC+Cell+Architecture) |
+| Atlas Mexico Cell Architecture | LAIE | [🔗](https://confluence.walmart.com/display/LAIE/Atlas+Mexico+Cell+Architecture) |
+| ATLAS OT DB Partitioning for OT Manual GDC — Cell-000 | NDOF | [🔗](https://confluence.walmart.com/display/NDOF/ATLAS+OT+Database+Partitioning+for+OT+Manual+Gdc-+Cell-000) |
+| Atlas Cell Wise Inventory | CSISDEVOPS | [🔗](https://confluence.walmart.com/display/CSISDEVOPS/Atlas+Cell+Wise+Inventory) |
+
+### 💻 KPI 4/5: CPU & DB Storage Utilization
+
+| Title | Space | Link |
+|-------|-------|------|
+| COE: High CPU Usage in Atlas GDC (INC49911332) | STRSQLSDO | [🔗](https://confluence.walmart.com/display/STRSQLSDO/COE%3A+06.10.2025+INC49911332+%7C+P3+%7C+Logistic+%7C+Observing+high+cpu+usage+in+Atlas+GDC) |
+| COE: Atlas Spike in DB Utilization & Blocking Sessions | GT | [🔗](https://confluence.walmart.com/display/GT/2026.02.27+COE+-+USTech+%7C+INC51998718+-+Logistics+-+Atlas+-+Spike+in+DB+Utilization+and+Blocking+Sessions) |
+| CPU Alert Statistics | STRSQLSDO | [🔗](https://confluence.walmart.com/display/STRSQLSDO/CPU+Alert+Statistics) |
+| Atlas-AzureSQL Stabilization & Scaling | — | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=2750360871) |
+| ATLAS Curated List of Monitoring & Alert Metrics | — | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=1331429582) |
+
+### ⏱️ KPI 6: Update Statistics Timing
+
+| Title | Space | Link |
+|-------|-------|------|
+| Update Statistics on Atlas Databases — Every 4 Hours | STRSQLSDO | [🔗](https://confluence.walmart.com/display/STRSQLSDO/Update+Statistics+on+Atlas+Databases-+Every+4hours) |
+| Auto Update Statistics Asynchronous | STRSQLSDO | [🔗](https://confluence.walmart.com/display/STRSQLSDO/Auto+update+statistics+Asynchronous) |
+| Update Gather Statistics Schedule for Atlas DB | GTSGLSPROGRAM | [🔗](https://confluence.walmart.com/display/GTSGLSPROGRAM/Update+Gather+Statistics+Schedule+for+Atlas+DB) |
+| Atlas Design Recommendations | STRSQLSDO | [🔗](https://confluence.walmart.com/display/STRSQLSDO/Atlas-Design+Recommendations) |
+
+### 📨 KPI 9: Kafka Messaging Monitoring
+
+| Title | Space | Link |
+|-------|-------|------|
+| COE: Atlas Kafka Consumer Lag at RDC Sites (Oct 2025) | HAW | [🔗](https://confluence.walmart.com/display/HAW/COE+-+2025-10-10+Atlas+Kafka+topic+consumer+lag+impacted+the+RDC+sites) |
+| Kafka Monitoring, Alerting & Dashboards | NIMAUT | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=1247126234) |
+| Runbook — Processing Outbox Events & Stuck Relayer Events | SCTA | [🔗](https://confluence.walmart.com/display/SCTA/Runbook+-+Processing+Outbox+Events+and+Discarding+Stuck+Relayer+Events) |
+| Atlas BCDR — DR Risks & Kafka Failover Challenges | — | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=3316526649) |
+| Kafka Topic Lag — ui_activity and atlas_inventory_update | SUPPLYCH | [🔗](https://confluence.walmart.com/display/SUPPLYCH/Kafka+Topic+Lag+-+ui_activity+and+atlas_inventory_update) |
+
+### 🚨 KPI 10: Availability & Incident Response
+
+| Title | Space | Link |
+|-------|-------|------|
+| COE: Atlas Outage at 3 DCs (Dec 2025) | GT | [🔗](https://confluence.walmart.com/display/GT/%3C2025.12.01%3E+COE+-+USTech+-+%3CINC50731681%3E+Atlas+Outage+at+three+DC%27s) |
+| COE: Multiple DCs Unable to Complete Order Fill (Jun 2025) | GT | [🔗](https://confluence.walmart.com/pages/viewpage.action?pageId=2893767010) |
+| Atlas FC Incidents | AIS | [🔗](https://confluence.walmart.com/display/AIS/Atlas+FC+Incidents) |
+| FAQ For Issues on ATLAS Production Support | AG | [🔗](https://confluence.walmart.com/display/AG/FAQ+For+Issues+on+ATLAS+Production+Support) |
+| Service Resiliency Framework | NIMAUT | [🔗](https://confluence.walmart.com/display/NIMAUT/Service+Resiliency+Framework) |
+
+### 🎡 KPI 11: Control Tower Integration
+
+| Title | Space | Link |
+|-------|-------|------|
+| Control Tower WMS | ARREW | [🔗](https://confluence.walmart.com/display/ARREW/Control+Tower+WMS) |
+| MS SQL DB Alerts Integration to Control Tower | NIMAUT | [🔗](https://confluence.walmart.com/display/NIMAUT/MS+SQL+DB+Alerts+Integration+To+Control+Tower) |
+| CT: Atlas Alerts KPI Path | NIMAUT | [🔗](https://confluence.walmart.com/display/NIMAUT/CT+%3A+Atlas+Alerts+KPI+Path) |
+| Control Tower — Monitor Walmart DC Site Health | CNTLTWER | [🔗](https://confluence.walmart.com/display/CNTLTWER/Control+Tower+to+monitor+Walmart+Distribution+Sites+health) |
+
+---
+
 ## ✅ Next Steps (Pick Up Here!)
 
 ### Immediate (Waiting On):
@@ -227,7 +317,9 @@ Every issue should capture the following fields:
 - [x] **Researched Atlas systems architecture** via Confluence (HAW space)
 - [x] **Discovered 15+ active Jira projects** for Atlas WMS
 - [x] **Built master issue log CSV** — seeded with 30 real Jira tickets (`tracking/master_issue_log.csv`)
-- [x] **Built Atlas Stability Dashboard** — HTML report with charts (`reports/atlas_stability_dashboard.html`)
+- [x] **Built Atlas Stability Dashboard** — HTML report with charts, DC hotspots, chronic issues, stale bugs, KPI health tab (`reports/atlas_stability_dashboard.html`)
+- [x] **Researched 80+ Atlas runbooks** via Confluence — indexed in project plan by KPI category
+- [x] **Updated KPI Health dashboard** — Incident Runbooks KPI now shows 🟢 Healthy (confirmed coverage)
 
 ### Once BigQuery Access is Confirmed:
 - [ ] Search BigQuery for Atlas-related tables (`%atlas%`)
