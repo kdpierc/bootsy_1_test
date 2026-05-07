@@ -199,12 +199,45 @@ Every issue should capture the following fields:
 
 ---
 
+## 🎫 Jira Project Ecosystem (Confirmed)
+
+> *Researched via Jira agent — May 7, 2026*
+
+| Project Key | Focus | Activity |
+|-------------|-------|----------|
+| **NMS** | OneAtlas Platform — WMS core | 🔴 Very High (9,255/90d) |
+| **IUF** | International Unit Fulfillment | 🔴 Very High (4,887/90d) |
+| **GLSMAV** | E2E Automation Testing for Atlas | 🔴 Very High (821 bugs/30d) |
+| **BLACKBIRD** | Atlas eComm FCs + Symbotic | 🟠 High (520/90d) |
+| **OPIF** | Atlas parent Epics & Platform Infra | 🟠 High |
+| **LAIE** | Legacy Atlas Integration Engineering | 🟡 Medium-High |
+| **SAGLS** | Sam's Club Atlas GLS Support | 🟡 Medium |
+| **AG** | Atlas GDC (Grocery DC) | 🟡 Medium |
+| **RTII** | Retail Tech Intl Integration (Symbotic rollouts) | 🟡 Medium |
+| **CEMPIF** | Canada/EMEA Atlas Platform Infra | 🟡 Medium |
+| **MOBILE** | Mobile Device Mgmt (Honeywell/TC) | 🟢 Low |
+| **SCTA** | Supply Chain Tech & Atlas RDC | 🟢 Low |
+| **BEDA** | Business Engineering Data Analytics | 🟢 Low |
+
+**Key Issue Volumes (90-day snapshot, May 2026):**
+- Receiving: 3,166 issues | Picking/OF: 1,323 | Shipping: 1,281
+- Symbotic integration: 726 | Putaway: 301 | Intelligrated: 96
+- Open P1-Critical issues: **5** | Open bugs (30d): **325+**
+
+---
+
 ## ✅ Next Steps (Pick Up Here!)
 
 ### Immediate (Waiting On):
 - [ ] **Get BigQuery access confirmed** — Ask manager what GCP project/datasets are available
 - [ ] **Get GCP project name(s)** — Need exact project ID to search BigQuery
 - [ ] **Confirm Google account setup** — Walmart email linked to GCP?
+
+### ✅ Completed (No BigQuery Needed!):
+- [x] **Researched Atlas systems architecture** via Confluence (HAW space)
+- [x] **Discovered 15+ active Jira projects** for Atlas WMS
+- [x] **Built master issue log CSV** — seeded with 30 real Jira tickets (`tracking/master_issue_log.csv`)
+- [x] **Built Atlas Stability Dashboard** — HTML report with charts (`reports/atlas_stability_dashboard.html`)
 
 ### Once BigQuery Access is Confirmed:
 - [ ] Search BigQuery for Atlas-related tables (`%atlas%`)
@@ -214,8 +247,7 @@ Every issue should capture the following fields:
 - [ ] Search BigQuery for invoice/GRS data (`%invoice%`, `%grs%`)
 - [ ] Map each KPI to a BigQuery data source
 - [ ] Write SQL queries for each KPI category
-- [ ] Build master issue log CSV template
-- [ ] Build KPI health tracker CSV template
+- [ ] Build KPI health tracker CSV template (`tracking/kpi_health_tracker.csv`)
 
 ### Ongoing:
 - [ ] Weekly KPI snapshots saved to GitHub
@@ -256,5 +288,5 @@ Let the agent know:
 
 ---
 
-*Last Updated: Day 3 of onboarding — added Systems Architecture & Inventory Lifecycle section*
+*Last Updated: May 7, 2026 — added Jira project ecosystem, completed master issue log CSV + HTML stability dashboard*
 *GitHub Repo: https://github.com/kdpierc/bootsy_1_test*

@@ -1,0 +1,31 @@
+Issue ID,Source,DC / Site,Date Reported,Issue Type,Severity,System / Module,Description,Status,Owner,Date Resolved,Root Cause,Resolution,Linked Ticket,Notes
+RRE-43373,Jira,Cell005,2026-05-01,Code Defect,P1-Critical,Receiving,PREALERT — Atlas Receiving — High CPU Usage Cell005,Backlog,,,,,,"Production alert — high CPU in receiving cell"
+IUF-37005,Jira,PDC7088 CA,2026-05-03,Code Defect,P1-Critical,Picking,PDC7088 CA PROD — Vocollect Order Filling Down,Backlog,,,,,,DC order filling completely down
+STRSQLSDO-81753,Jira,Multiple,2026-05-02,Code Defect,P1-Critical,Automation / Intelligrated,Intelligrated ASAP DB Server — SQLSYS at 99.99% capacity,Ready for Review,,,,,,Critical DB capacity risk — production
+IUF-36952,Jira,PDC7018,2026-04-29,Code Defect,P1-Critical,Receiving,PDC7018 PROD — Atlas and SIW Sync Issue,Backlog,,,,,,Production inventory sync broken
+GLSMAV-87123,Jira,DC 3930,2026-05-04,Code Defect,P1-Critical,Shipping,DC 3930 — Shore not able to process gate-out,Backlog,,,,,,DC operations blocked on outbound
+NMS-11957,Jira,Auto GDC 8348,2026-05-05,Code Defect,P2-High,Automation / Intelligrated,Auto Endgame Inbound — CPU spike to 100% at regular intervals,Backlog,,,,,,Stability risk — recurring prod issue
+BLACKBIRD-2304,Jira,Multiple,2026-04-28,Code Defect,P2-High,Automation / Symbotic,HUB fails to create Dispatch Work Order after CINE event — 500 error,Backlog,,,,,,WES/WCS outbound failure blocking Symbotic flow
+GLSMAV-87125,Jira,Multiple,2026-05-05,Code Defect,P2-High,Shipping,SHORE ASN Generation Failure even though Trailer Departed from Sortation,Backlog,,,,,,Outbound ASN broken — affects invoicing
+SUPPCHIN-87988,Jira,Multiple,2026-04-30,Data Issue,P2-High,Inventory,Data Quality: Stale Laminar FC Atlas Inventory,Blocked,,,,,,Inventory data integrity issue
+IUF-36994,Jira,CL 6003,2026-04-27,Code Defect,P2-High,Receiving,After receiving — container creation not happening,Backlog,,,,,,Receiving flow broken at DC 6003
+IUF-37011,Jira,Multiple,2026-05-01,Code Defect,P2-High,Receiving,Error — Please try again or contact your supervisor during receive,Backlog,,,,,,Generic error blocking receiving associates
+NMS-11935,Jira,DC 2470,2026-05-03,Code Defect,P2-High,Picking,OneAtlas GDC Breakpack — Full pull move with duplicate WHPKs,Backlog,,,,,,Duplicate pick issue causing order errors
+NMS-9930,Jira,RDC,2026-04-15,Code Defect,P2-High,Automation / Intelligrated,RDC OneAtlas — OF sending duplicate PUTs to Intelligrated,Backlog,,,,,,Duplicate messages to Intelligrated causing pick errors
+NMS-11932,Jira,Multiple,2026-05-04,Code Defect,P2-High,Picking,XDK2 picks — OF sending cartonization seq 9998 for non-marine store,Backlog,,,,,,Incorrect cartonization sequence in pick messages
+NMS-11701,Jira,Auto GDC 8348,2026-04-20,Code Defect,P2-High,Shipping,Auto GDC 8348 — Close load event failing in shore disabled version,Backlog,,,,,,Load closing broken in production
+GLSMAV-87152,Jira,Dev3,2026-05-06,Code Defect,P3-Medium,Receiving,Dev3 — Unable to Receive in Reserve Slots,Backlog,,,,,,Receiving blocked in reserve slot locations
+GLSMAV-87150,Jira,Dev3,2026-05-06,Code Defect,P3-Medium,Receiving,Dev3 — Receiving on Ready Reserve — No Slot Found,Backlog,,,,,,No slot found error during reserve receiving
+GLSMAV-87080,Jira,Belvidere,2026-05-02,Code Defect,P3-Medium,Putaway,Belvidere GCC — Loading did not send Putaway Request for LOD pallets,In Progress Dev,,,,,,Putaway request not triggered for LOD pallets
+GLSMAV-87074,Jira,DC 2675,2026-05-02,Code Defect,P3-Medium,Putaway,DC 2675 GCC — After door assigned from Witron arrived event not triggered,Backlog,,,,,,Witron door event not firing putaway flow
+IUF-36821,Jira,MX 7401,2026-04-18,Code Defect,P3-Medium,Putaway,MX 7401 — Putaway move not generated on General adjustment,Backlog,,,,,,Mexico DC putaway gap on inventory adjustments
+NMS-11877,Jira,DC 6085,2026-05-03,Code Defect,P3-Medium,Shipping,OneAtlas GDC Breakpack 6085 — Preplan not cancelled on load deletion,Backlog,,,,,,Orphaned preplans causing load management issues
+IUF-36986,Jira,CA 2028,2026-04-29,Code Defect,P3-Medium,Picking,CA 2028 — Android 13 — Unable to perform Picking in Endgame,Backlog,,,,,,Android 13 upgrade breaking Atlas Endgame picking
+MOBILE-37229,Jira,Multiple,2026-04-10,Enhancement,P3-Medium,Automation / Honeywell,Honeywell RT10A Android 13 Upgrade,Work in Progress,,,,,,Device fleet OS upgrade in progress
+LAIE-83016,Jira,Multiple,2026-04-01,Enhancement,P2-High,Automation / Intelligrated,SLES11 Elimination — Intelligrated Ubuntu Migration,Backlog (Epic),,,,,,OS debt — legacy SLES11 end of life risk
+SAGLS-10257,Jira,Sam's Club DC,2026-05-06,Code Defect,P3-Medium,Receiving,LOGS - Sams Atlas Receiving,Backlog,,,,,,Repeat receiving support ticket — Sam's Club DC
+NMS-11657,Jira,RDC,2026-04-22,Code Defect,P3-Medium,Automation / Symbotic,XDK2 pick orders — OF sending System as Manual instead of SYM,Backlog,,,,,,Incorrect system label in pick messages to Symbotic
+BLACKBIRD-2334,Jira,Multiple,2026-04-28,Enhancement,P3-Medium,Automation / Symbotic,atlas-inventory-core: Add Symbotic Adj Reason Codes to Inventory DB,Backlog,,,,,,Enhancement needed for Symbotic inventory reconciliation
+CEMPIF-3852,Jira,Multiple,2026-04-15,Enhancement,P4-Low,Automation / Honeywell,Atlas UI to Link WM ID to Voice ID Without Service Ticket,Backlog,,,,,,Quality of life enhancement for voice pick setup
+NMS-10523,Jira,PDC/GCC,2026-04-10,Enhancement,P4-Low,Putaway,Atlas Inventory Adj reasons must be limited for PDC/GCC pallets not putaway,Backlog,,,,,,Enhancement to prevent invalid inventory adjustments
+IUF-34455,Jira,Multiple,2026-03-20,Code Defect,P4-Low,Automation / Honeywell,ATLAS BAE — OF — Missing Voice Prompt Opening Container (Honeywell),Backlog,,,,,,Missing voice prompt in Honeywell picking flow
