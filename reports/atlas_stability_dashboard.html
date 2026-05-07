@@ -8,265 +8,281 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --wmt-blue: #0053e2; --wmt-spark: #ffc220; --wmt-red: #ea1100;
-      --wmt-green: #2a8703; --wmt-warn-text: #995213; --wmt-warn-bg: #fff8ec;
-      --wmt-gray-text: #1d1d1d; --wmt-gray-border: #c4c4c4; --wmt-gray-subtle: #f5f5f5;
+      --wmt-blue:#0053e2; --wmt-spark:#ffc220; --wmt-red:#ea1100;
+      --wmt-green:#2a8703; --wmt-warn:#995213; --wmt-warn-bg:#fff8ec;
+      --wmt-subtle:#f5f5f5; --wmt-text:#1d1d1d;
     }
-    body { font-family: 'Segoe UI', sans-serif; background: var(--wmt-gray-subtle); color: var(--wmt-gray-text); }
-    .wmt-header { background: var(--wmt-blue); }
-    .badge-p1 { background: #fde8e8; color: var(--wmt-red); }
-    .badge-p2 { background: var(--wmt-warn-bg); color: var(--wmt-warn-text); }
-    .badge-p3 { background: #e8f0fe; color: var(--wmt-blue); }
-    .badge-p4 { background: #f0f0f0; color: #555; }
-    .badge-status-open { background: #fde8e8; color: var(--wmt-red); }
-    .badge-status-prog { background: #e8f0fe; color: var(--wmt-blue); }
-    .badge-status-done { background: #e8f5e3; color: var(--wmt-green); }
-    .chart-wrap { position: relative; height: 260px; }
-    .insight-card { border-left: 4px solid var(--wmt-spark); background: var(--wmt-warn-bg); }
-    th { background: var(--wmt-blue); color: white; font-weight: 600; }
-    tr:nth-child(even) { background: #f9f9fb; }
+    body { font-family:'Segoe UI',sans-serif; background:var(--wmt-subtle); color:var(--wmt-text); }
+    .wmt-header { background:var(--wmt-blue); }
+    .badge { padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+    .s-p1 { background:#fde8e8; color:var(--wmt-red); }
+    .s-p2 { background:var(--wmt-warn-bg); color:var(--wmt-warn); }
+    .s-p3 { background:#e8f0fe; color:var(--wmt-blue); }
+    .s-open { background:#fde8e8; color:var(--wmt-red); }
+    .s-prog { background:#e8f0fe; color:var(--wmt-blue); }
+    .s-done { background:#e8f5e3; color:var(--wmt-green); }
+    .s-block { background:#f5e8fe; color:#6b21a8; }
+    .chart-wrap { position:relative; height:240px; }
+    th { background:var(--wmt-blue); color:white; font-weight:600; padding:8px 12px; text-align:left; }
+    td { padding:7px 12px; font-size:13px; }
+    tr:nth-child(even) { background:#f9f9fb; }
+    .alert-bar { border-left:4px solid var(--wmt-red); background:#fde8e8; }
+    .insight-bar { border-left:4px solid var(--wmt-spark); background:var(--wmt-warn-bg); }
+    .nav-tab { cursor:pointer; padding:8px 18px; border-radius:8px 8px 0 0; font-weight:600; font-size:13px; }
+    .nav-tab.active { background:white; color:var(--wmt-blue); }
+    .nav-tab:not(.active) { background:#dce8ff; color:#1d4ed8; }
+    .tab-panel { display:none; } .tab-panel.active { display:block; }
   </style>
 </head>
 <body class="min-h-screen">
-
-<!-- HEADER -->
 <header class="wmt-header text-white px-6 py-4 flex items-center justify-between shadow">
-  <div class="flex items-center gap-3">
-    <span class="text-2xl font-bold tracking-tight">🏭 Atlas WMS Stability Dashboard</span>
-  </div>
-  <div class="text-sm opacity-80">Supply Chain Technology Ops &nbsp;|&nbsp; Last Updated: <span id="ts"></span></div>
+  <span class="text-xl font-bold">🏭 Atlas WMS Stability Dashboard</span>
+  <span class="text-sm opacity-80">Supply Chain Tech Ops &nbsp;|&nbsp; <span id="ts"></span></span>
 </header>
 
-<!-- EXECUTIVE INSIGHTS TOP -->
-<div class="max-w-7xl mx-auto px-6 pt-6">
-  <div class="insight-card rounded-lg p-4 mb-6">
-    <p class="font-bold text-lg mb-1" style="color:var(--wmt-warn-text)">⚡ Executive Snapshot — May 2026</p>
-    <ul class="text-sm space-y-1" style="color:var(--wmt-warn-text)">
-      <li>• <strong>5 P1-Critical issues</strong> are open — including Vocollect OF down at PDC7088 and Intelligrated DB at 99.99% capacity.</li>
-      <li>• <strong>Receiving</strong> is the highest-volume module with 3,166 issues in 90 days — Sam's Club DCs show repeat incidents.</li>
-      <li>• <strong>Symbotic integration</strong> has 726 open tickets — multiple in-flight WCS/WES contract changes are active risks.</li>
-      <li>• <strong>GLSMAV E2E automation</strong> is generating 800+ bugs/month — requires signal-vs-noise triage to find real defects.</li>
-      <li>• <strong>10+ active DC rollouts</strong> in flight — MX, CA, and US DCs expanding Atlas and Symbotic coverage simultaneously.</li>
+<div class="max-w-7xl mx-auto px-6 pt-5">
+
+  <!-- 🚨 CRISIS ALERT -->
+  <div class="alert-bar rounded-lg p-4 mb-4">
+    <p class="font-bold text-sm" style="color:var(--wmt-red)">🚨 Stability Alert — Immediate Action Required</p>
+    <ul class="text-xs mt-1 space-y-0.5" style="color:var(--wmt-red)">
+      <li>• <strong>Bug rate accelerating +41% in 3 months</strong> (1,163 → 1,636/mo) — on track for 2,100+/mo by July if unaddressed.</li>
+      <li>• <strong>3,191 bugs are 60+ days old</strong> and unresolved — critical backlog rot across NMS, IUF, GLSMAV.</li>
+      <li>• <strong>Sam's Club (SAGLS)</strong> has 40+ tickets/day for the same stuck-order bug — one platform fix could eliminate hundreds of incidents.</li>
+      <li>• <strong>DC 2470 GDC Breakpack</strong> has 141 tickets across 5 broken subsystems — needs a tiger team, not ticket-by-ticket triage.</li>
     </ul>
   </div>
 
   <!-- METRIC CARDS -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
     <div class="bg-white rounded-xl shadow p-4 text-center border-t-4" style="border-color:var(--wmt-red)">
       <p class="text-3xl font-bold" style="color:var(--wmt-red)">5</p>
-      <p class="text-sm text-gray-500 mt-1">P1-Critical Open</p>
+      <p class="text-xs text-gray-500 mt-1">P1-Critical Open</p>
     </div>
-    <div class="bg-white rounded-xl shadow p-4 text-center border-t-4" style="border-color:var(--wmt-warn-text)">
-      <p class="text-3xl font-bold" style="color:var(--wmt-warn-text)">325+</p>
-      <p class="text-sm text-gray-500 mt-1">Open Bugs (30d)</p>
+    <div class="bg-white rounded-xl shadow p-4 text-center border-t-4" style="border-color:var(--wmt-warn)">
+      <p class="text-3xl font-bold" style="color:var(--wmt-warn)">1,636</p>
+      <p class="text-xs text-gray-500 mt-1">Bugs Created (Apr)</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center border-t-4" style="border-color:var(--wmt-red)">
+      <p class="text-3xl font-bold" style="color:var(--wmt-red)">3,191</p>
+      <p class="text-xs text-gray-500 mt-1">Stale Bugs 60d+</p>
     </div>
     <div class="bg-white rounded-xl shadow p-4 text-center border-t-4" style="border-color:var(--wmt-blue)">
-      <p class="text-3xl font-bold" style="color:var(--wmt-blue)">15+</p>
-      <p class="text-sm text-gray-500 mt-1">Active Jira Projects</p>
+      <p class="text-3xl font-bold" style="color:var(--wmt-blue)">10</p>
+      <p class="text-xs text-gray-500 mt-1">DC Hotspots</p>
     </div>
     <div class="bg-white rounded-xl shadow p-4 text-center border-t-4" style="border-color:var(--wmt-green)">
       <p class="text-3xl font-bold" style="color:var(--wmt-green)">10+</p>
-      <p class="text-sm text-gray-500 mt-1">Active DC Rollouts</p>
+      <p class="text-xs text-gray-500 mt-1">Active Rollouts</p>
     </div>
   </div>
 
-  <!-- CHARTS ROW -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-xl shadow p-4 md:col-span-2">
-      <p class="font-semibold mb-3" style="color:var(--wmt-blue)">📦 Issue Volume by Module (Last 90 Days)</p>
-      <div class="chart-wrap"><canvas id="moduleChart"></canvas></div>
+  <!-- TABS -->
+  <div class="flex gap-1 mb-0">
+    <div class="nav-tab active" onclick="showTab('overview')">📊 Overview</div>
+    <div class="nav-tab" onclick="showTab('hotspots')">🔥 DC Hotspots</div>
+    <div class="nav-tab" onclick="showTab('chronic')">🔁 Chronic Issues</div>
+    <div class="nav-tab" onclick="showTab('stale')">🧟 Stale Bugs</div>
+    <div class="nav-tab" onclick="showTab('actions')">📋 Actions</div>
+  </div>
+
+  <!-- TAB: OVERVIEW -->
+  <div id="tab-overview" class="tab-panel active bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+      <div>
+        <p class="font-semibold mb-2 text-sm" style="color:var(--wmt-blue)">📦 Issue Volume by Module (90 Days)</p>
+        <div class="chart-wrap"><canvas id="moduleChart"></canvas></div>
+      </div>
+      <div>
+        <p class="font-semibold mb-2 text-sm" style="color:var(--wmt-blue)">📈 Bug Creation Trend (Month-over-Month)</p>
+        <div class="chart-wrap"><canvas id="momChart"></canvas></div>
+      </div>
     </div>
-    <div class="bg-white rounded-xl shadow p-4">
-      <p class="font-semibold mb-3" style="color:var(--wmt-blue)">🎯 Open Issues by Severity</p>
-      <div class="chart-wrap"><canvas id="severityChart"></canvas></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div>
+        <p class="font-semibold mb-2 text-sm" style="color:var(--wmt-blue)">🗂️ Ticket Volume by Project (90d)</p>
+        <div class="chart-wrap"><canvas id="projectChart"></canvas></div>
+      </div>
+      <div>
+        <p class="font-semibold mb-2 text-sm" style="color:var(--wmt-blue)">🧠 Estimated Root Cause Breakdown</p>
+        <div class="chart-wrap"><canvas id="rootChart"></canvas></div>
+      </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white rounded-xl shadow p-4">
-      <p class="font-semibold mb-3" style="color:var(--wmt-blue)">🗂️ Ticket Volume by Jira Project (90d)</p>
-      <div class="chart-wrap"><canvas id="projectChart"></canvas></div>
-    </div>
-    <div class="bg-white rounded-xl shadow p-4">
-      <p class="font-semibold mb-3" style="color:var(--wmt-blue)">🔌 Integration Health — Issue Count by System</p>
-      <div class="chart-wrap"><canvas id="integrationChart"></canvas></div>
-    </div>
-  </div>
-
-  <!-- CRITICAL ISSUES TABLE -->
-  <div class="bg-white rounded-xl shadow p-4 mb-6">
-    <p class="font-semibold mb-3" style="color:var(--wmt-red)">🚨 Active Critical & High Issues (P1 / P2)</p>
+  <!-- TAB: DC HOTSPOTS -->
+  <div id="tab-hotspots" class="tab-panel bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
+    <p class="font-semibold mb-3" style="color:var(--wmt-red)">🔥 Top 10 DC Hotspots — Ranked by Ticket Volume & Systemic Risk</p>
     <div class="overflow-x-auto">
       <table class="w-full text-sm rounded overflow-hidden">
         <thead><tr>
-          <th class="px-3 py-2 text-left">Issue ID</th>
-          <th class="px-3 py-2 text-left">DC / Site</th>
-          <th class="px-3 py-2 text-left">Module</th>
-          <th class="px-3 py-2 text-left">Summary</th>
-          <th class="px-3 py-2 text-left">Severity</th>
-          <th class="px-3 py-2 text-left">Status</th>
+          <th>Rank</th><th>DC</th><th>Tickets</th><th>Project(s)</th><th>Failing Module</th><th>Systemic?</th><th>Verdict</th>
         </tr></thead>
-        <tbody id="criticalTable"></tbody>
+        <tbody id="hotspotTable"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- ACTIVE ROLLOUTS TABLE -->
-  <div class="bg-white rounded-xl shadow p-4 mb-6">
-    <p class="font-semibold mb-3" style="color:var(--wmt-blue)">🚀 Active DC Rollouts In-Flight</p>
+  <!-- TAB: CHRONIC ISSUES -->
+  <div id="tab-chronic" class="tab-panel bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
+    <p class="font-semibold mb-3" style="color:var(--wmt-warn)">🔁 Confirmed Systemic / Chronic Issue Patterns</p>
+    <div class="space-y-4" id="chronicCards"></div>
+  </div>
+
+  <!-- TAB: STALE BUGS -->
+  <div id="tab-stale" class="tab-panel bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
+    <p class="font-semibold mb-1" style="color:var(--wmt-red)">🧟 Stale Bug Crisis — 3,191 Bugs Open 60+ Days</p>
+    <p class="text-xs text-gray-500 mb-3">These bugs have been sitting unresolved for 2+ months. High-risk items flagged below.</p>
     <div class="overflow-x-auto">
       <table class="w-full text-sm rounded overflow-hidden">
-        <thead><tr>
-          <th class="px-3 py-2 text-left">DC / Market</th>
-          <th class="px-3 py-2 text-left">Technology</th>
-          <th class="px-3 py-2 text-left">Jira Project</th>
-          <th class="px-3 py-2 text-left">Status</th>
-        </tr></thead>
-        <tbody id="rolloutTable"></tbody>
+        <thead><tr><th>Ticket</th><th>Summary</th><th>Age</th><th>Status</th><th>Risk</th></tr></thead>
+        <tbody id="staleTable"></tbody>
       </table>
     </div>
-  </div>
-
-  <!-- PAIN POINTS -->
-  <div class="bg-white rounded-xl shadow p-4 mb-6">
-    <p class="font-semibold mb-3" style="color:var(--wmt-blue)">🔥 Top Operational Pain Points</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-      <div class="rounded-lg p-3" style="background:var(--wmt-gray-subtle);border-left:4px solid var(--wmt-red)">
-        <p class="font-semibold">GCC/GDC Putaway Loop Failures</p>
-        <p class="text-gray-600 mt-1">Witron, Belvidere, DC 2675 repeatedly failing to trigger putaway events after door assignment.</p>
-      </div>
-      <div class="rounded-lg p-3" style="background:var(--wmt-gray-subtle);border-left:4px solid var(--wmt-red)">
-        <p class="font-semibold">Sam's Club Receiving Queue (SAGLS)</p>
-        <p class="text-gray-600 mt-1">Same DCs generating repeat support incidents — high volume, likely config or training root cause.</p>
-      </div>
-      <div class="rounded-lg p-3" style="background:var(--wmt-gray-subtle);border-left:4px solid var(--wmt-warn-text)">
-        <p class="font-semibold">GLSMAV E2E Automation Noise</p>
-        <p class="text-gray-600 mt-1">800+ auto-generated bugs/month. Requires triage to separate real prod defects from test environment issues.</p>
-      </div>
-      <div class="rounded-lg p-3" style="background:var(--wmt-gray-subtle);border-left:4px solid var(--wmt-warn-text)">
-        <p class="font-semibold">Symbotic WCS Inventory Sync</p>
-        <p class="text-gray-600 mt-1">726 open Symbotic tickets — in-flight WES↔WCS contract changes are active integration risks across DCs.</p>
-      </div>
-      <div class="rounded-lg p-3" style="background:var(--wmt-gray-subtle);border-left:4px solid var(--wmt-blue)">
-        <p class="font-semibold">Intelligrated OS & Cert Debt</p>
-        <p class="text-gray-600 mt-1">SLES11 → Ubuntu migration + certificate renewals are ticking time bombs across Intelligrated-connected DCs.</p>
-      </div>
-      <div class="rounded-lg p-3" style="background:var(--wmt-gray-subtle);border-left:4px solid var(--wmt-blue)">
-        <p class="font-semibold">Android 13/14 Device Upgrades</p>
-        <p class="text-gray-600 mt-1">Honeywell fleet OS upgrades breaking Atlas app compatibility — impacting voice pick and Endgame picking at CA DCs.</p>
-      </div>
+    <div class="mt-4 rounded-lg p-3 text-sm" style="background:var(--wmt-warn-bg);border-left:4px solid var(--wmt-warn)">
+      <p class="font-semibold" style="color:var(--wmt-warn)">⚠️ Process Gaps Found</p>
+      <ul class="text-xs mt-1 space-y-1" style="color:var(--wmt-warn)">
+        <li>• <strong>No priority field in use</strong> across Atlas Jira projects — SLA tracking is impossible without it. Recommend S1/S2/S3/S4 severity field on all bugs.</li>
+        <li>• <strong>~60% of SAGLS backlog tickets have no assignee</strong> — nobody owns them.</li>
+        <li>• <strong>30+ GLSMAV bugs owned by "EndToEnd Automation" bot</strong> — no human owner, may never get fixed.</li>
+      </ul>
     </div>
   </div>
 
-  <!-- EXECUTIVE INSIGHTS BOTTOM -->
-  <div class="insight-card rounded-lg p-4 mb-8">
-    <p class="font-bold text-lg mb-2" style="color:var(--wmt-warn-text)">📋 Recommended Actions for Leadership</p>
-    <ul class="text-sm space-y-1" style="color:var(--wmt-warn-text)">
-      <li>1. <strong>Immediate:</strong> Assign owners to all 5 P1-Critical open issues — PDC7088 Vocollect outage and Intelligrated DB at 99.99% are highest urgency.</li>
-      <li>2. <strong>This week:</strong> Investigate SAGLS repeat receiving incidents — high volume of same-DC tickets suggests systemic config or training gap.</li>
-      <li>3. <strong>This sprint:</strong> Triage GLSMAV auto-generated bug backlog to separate real production defects from test noise — 800+/month is unsustainable.</li>
-      <li>4. <strong>Planning:</strong> Review Intelligrated SLES11 migration timeline — LAIE-83016 Epic is open with no resolution date.</li>
-      <li>5. <strong>Monitoring:</strong> Stand up BigQuery KPI queries (pending GCP access) to get real-time message health metrics across Symbotic, Intelligrated, and Honeywell integrations.</li>
-    </ul>
+  <!-- TAB: ACTIONS -->
+  <div id="tab-actions" class="tab-panel bg-white rounded-b-xl rounded-tr-xl shadow p-5 mb-5">
+    <p class="font-semibold mb-3" style="color:var(--wmt-blue)">📋 Recommended Actions for Leadership</p>
+    <div class="space-y-3" id="actionCards"></div>
   </div>
-  <p class="text-xs text-center text-gray-400 mb-4">Atlas WMS Stability Dashboard &nbsp;|&nbsp; Supply Chain Technology Ops &nbsp;|&nbsp; Data sourced from Jira &nbsp;|&nbsp; <span id="ts2"></span></p>
+
+  <p class="text-xs text-center text-gray-400 mb-6">Atlas WMS Stability Dashboard &nbsp;|&nbsp; Supply Chain Technology Ops &nbsp;|&nbsp; Source: Jira Deep Dive Analysis &nbsp;|&nbsp; <span id="ts2"></span></p>
 </div>
 
 <script>
-  const now = new Date().toLocaleString();
-  document.getElementById('ts').textContent = now;
-  document.getElementById('ts2').textContent = now;
+  const t = new Date().toLocaleString();
+  document.getElementById('ts').textContent = t;
+  document.getElementById('ts2').textContent = t;
+  const B='#0053e2',R='#ea1100',S='#ffc220',G='#2a8703',W='#995213',GR='#c4c4c4';
 
-  const wBlue='#0053e2', wRed='#ea1100', wSpark='#ffc220', wGreen='#2a8703', wWarn='#995213', wGray='#c4c4c4';
+  function showTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+    event.target.classList.add('active');
+  }
 
-  // Module Chart
-  new Chart(document.getElementById('moduleChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Receiving','Picking / OF','Shipping','Symbotic','Putaway','Intelligrated','Hawkeye WCS','Honeywell'],
-      datasets: [{ label: 'Issues (90d)', data: [3166,1323,1281,726,301,96,21,18],
-        backgroundColor: [wRed,wBlue,wBlue,wSpark,wBlue,wWarn,wGreen,wGray], borderRadius: 4 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } } }
-  });
+  // Charts
+  new Chart(document.getElementById('moduleChart'), { type:'bar', data: {
+    labels:['Receiving','Picking/OF','Shipping','Symbotic','Putaway','Intelligrated','Hawkeye','Honeywell'],
+    datasets:[{label:'Issues',data:[3166,1323,1281,726,301,96,21,18],
+      backgroundColor:[R,B,B,S,B,W,G,GR],borderRadius:4}]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
 
-  // Severity Chart
-  new Chart(document.getElementById('severityChart'), {
-    type: 'doughnut',
-    data: {
-      labels: ['P1-Critical','P2-High','P3-Medium','P4-Low'],
-      datasets: [{ data: [5,10,11,4], backgroundColor: [wRed,wWarn,wBlue,wGray], borderWidth: 2 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
-  });
+  new Chart(document.getElementById('momChart'), { type:'bar', data: {
+    labels:['Feb 2026','Mar 2026','Apr 2026'],
+    datasets:[
+      {label:'Total Tickets',data:[6604,5680,5937],backgroundColor:B+'55',borderRadius:4},
+      {label:'Bugs Only',data:[1163,1459,1636],backgroundColor:R,borderRadius:4}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12}}},scales:{y:{beginAtZero:true}}}});
 
-  // Project Chart
-  new Chart(document.getElementById('projectChart'), {
-    type: 'bar',
-    data: {
-      labels: ['NMS','IUF','GLSMAV','BLACKBIRD','LAIE','SAGLS','Other'],
-      datasets: [{ label: 'Tickets (90d)', data: [9255,4887,821,520,200,120,350],
-        backgroundColor: [wBlue,wBlue,wWarn,wRed,wGray,wGreen,'#999'], borderRadius: 4 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } } }
-  });
+  new Chart(document.getElementById('projectChart'), { type:'bar', data: {
+    labels:['NMS','IUF','GLSMAV','BLACKBIRD','SAGLS','LAIE','Other'],
+    datasets:[{label:'Tickets',data:[9255,4887,821,520,977,200,350],
+      backgroundColor:[B,B,S,R,W,GR,'#999'],borderRadius:4}]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
 
-  // Integration Chart
-  new Chart(document.getElementById('integrationChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Symbotic (SYM)','Intelligrated','Hawkeye WCS','Honeywell','Witron','Endgame'],
-      datasets: [{ label: 'Open Issues', data: [726,96,21,18,15,8],
-        backgroundColor: [wSpark,wRed,wBlue,wGray,wGreen,wWarn], borderRadius: 4 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false,
-      indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
-  });
+  new Chart(document.getElementById('rootChart'), { type:'doughnut', data: {
+    labels:['Code Defects (58%)','Data/Integration (22%)','Config Issues (12%)','Training/User Error (8%)'],
+    datasets:[{data:[58,22,12,8],backgroundColor:[R,W,B,G],borderWidth:2}]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}}}});
 
-  // Critical Issues Table
-  const critical = [
-    ['RRE-43373','Cell005','Receiving','PREALERT — Atlas Receiving — High CPU Usage','P1-Critical','Backlog'],
-    ['IUF-37005','PDC7088 CA','Picking','Vocollect Order Filling completely down at DC','P1-Critical','Backlog'],
-    ['STRSQLSDO-81753','Multiple','Intelligrated','Intelligrated ASAP DB at 99.99% capacity','P1-Critical','Ready for Review'],
-    ['IUF-36952','PDC7018','Receiving','Atlas and SIW Sync Issue in PROD','P1-Critical','Backlog'],
-    ['GLSMAV-87123','DC 3930','Shipping','Shore not able to process gate-out','P1-Critical','Backlog'],
-    ['NMS-11957','Auto GDC 8348','Intelligrated','Endgame Inbound CPU spike to 100%','P2-High','Backlog'],
-    ['BLACKBIRD-2304','Multiple','Symbotic','HUB fails Dispatch Work Order — 500 error','P2-High','Backlog'],
-    ['SUPPCHIN-87988','Multiple','Inventory','Stale Laminar FC Atlas Inventory data quality','P2-High','Blocked'],
-    ['IUF-36994','CL 6003','Receiving','Container creation not happening after receive','P2-High','Backlog'],
-    ['NMS-9930','RDC','Intelligrated','OF sending duplicate PUTs to Intelligrated','P2-High','Backlog'],
+  // DC Hotspot Table
+  const hotspots = [
+    ['🥇','DC 2470 (GDC Breakpack)','141 direct','NMS','Breakpack / OF / Inventory','🚨 CRITICAL','New site onboarding — 5 subsystems broken, not triageable ticket-by-ticket'],
+    ['🥈','DC 6085 (GDC/RDC)','40+ direct','NMS, GLSMAV','Breakpack, Workload','🚨 YES','8+ Breakpack bugs — same Epic as DC 2470 rollout'],
+    ['🥉','DC 5976 (MX Ambient)','15+ direct','IUF','Receiving, ICC, Loading','🚨 YES','5+ Receiving/ICC bugs — new MX site stabilization'],
+    ['4','DC 6001 (Pharmacy GDC)','173 direct','GLSMAV','DCFin / Invoice / GDIS','🚨 CRITICAL','12+ finance pipeline bugs — OSDR→SAP broken'],
+    ['5','DC 2675 (Belvidere GCC)','20+ direct','GLSMAV','Loading / GCC Integration','🚨 YES','State machine locking — loads stuck in-progress, 1 BLOCKED'],
+    ['6','DC 6042 (B2B GDC)','15+ direct','NMS','Shore / B2B ASN / Invoice','🚨 YES','8+ Shore/B2B bugs — ASN and invoice failures'],
+    ['7','DC 6938 (Sam\'s IDC)','15+ direct','GLSMAV, SAGLS','DCFin / OSDR / PBYL','🚨 YES','8+ finance bugs — same pipeline failure as DC 6001'],
+    ['8','DC 8980 (Dev3 New Facility)','210 direct','GLSMAV','Receiving / Slotting / MM','🚨 YES','15+ setup bugs — mostly config masquerading as code defects'],
+    ['9','DC 7401 (MX FC)','14 direct','IUF','Receiving / Putaway / Delivery','🚨 YES','10+ Receiving bugs — new MX site active in PROD'],
+    ['10','DC 7088 (CA HVDC)','96 direct','IUF','Count IT / ICQA / Receiving','🚨 YES','8+ functional bugs — Android 13 + new site issues'],
   ];
-  const sevClass = s => s==='P1-Critical'?'badge-p1':s==='P2-High'?'badge-p2':s==='P3-Medium'?'badge-p3':'badge-p4';
-  const stClass = s => s==='Done'?'badge-status-done':s.includes('Progress')||s.includes('Review')?'badge-status-prog':'badge-status-open';
-  document.getElementById('criticalTable').innerHTML = critical.map(([id,dc,mod,sum,sev,stat])=>`
-    <tr><td class="px-3 py-2 font-mono text-xs font-semibold" style="color:var(--wmt-blue)">${id}</td>
-    <td class="px-3 py-2 text-xs">${dc}</td>
-    <td class="px-3 py-2 text-xs">${mod}</td>
-    <td class="px-3 py-2 text-xs">${sum}</td>
-    <td class="px-3 py-2"><span class="text-xs px-2 py-0.5 rounded-full font-semibold ${sevClass(sev)}">${sev}</span></td>
-    <td class="px-3 py-2"><span class="text-xs px-2 py-0.5 rounded-full font-semibold ${stClass(stat)}">${stat}</span></td></tr>`).join('');
+  document.getElementById('hotspotTable').innerHTML = hotspots.map(([r,dc,ct,proj,mod,sys,verdict])=>`
+    <tr><td class="font-bold">${r}</td>
+    <td class="font-semibold" style="color:var(--wmt-blue)">${dc}</td>
+    <td>${ct}</td><td class="font-mono text-xs">${proj}</td><td>${mod}</td>
+    <td><span class="badge s-p1">${sys}</span></td>
+    <td class="text-xs text-gray-600">${verdict}</td></tr>`).join('');
 
-  // Rollout Table
-  const rollouts = [
-    ['MX DC 7401, 7459','Atlas WMS (International)','IUF','🟠 Active — bugs in PROD'],
-    ['CA DCs 7088, 7013','Atlas HVDC','IUF','🟠 In Progress'],
-    ['CA DC 6081 Calgary','Symbotic Breakpack Ph5','LAIE','🔵 Backlog'],
-    ['US DC 6048, 6027, 6030, 6038, 6040','Symbotic Phase — wired configs','GTPER','🔴 Blocked'],
-    ['US DC 2028 / Kraft FC','Atlas FC Rollout','IC','🔵 Backlog'],
-    ['US IND1','ICC 2-Tier','NMS','🟠 In Progress QA'],
-    ['US PHL5, DFW5','WCS SLAM Flow V2','NMS','🔵 Backlog'],
-    ['MX DC 7461 Monterrey','Atlas Feature Training','MXSUPDCFCO','✅ Done (FY27 Q1)'],
-    ['US DC 6031, 6016','SYMPT Mobile Deployment','NMS','✅ Done'],
-    ['MX Symbotic DC','Environment Setup & Testing','RTII','🟠 In Progress'],
+  // Chronic Issue Cards
+  const chronic = [
+    {color:'var(--wmt-red)',title:'DC 2470 — GDC Breakpack: 20+ Same-Subsystem Repeat Bugs',
+     body:'Trip completion, Move Management, Inventory Adjustment, Label Printing, and Replenishment Flow each logged 2–5 times. Example: NMS-11700 and NMS-11930 are the same root cause filed twice. Classic systemic onboarding failure — needs a formal root cause sprint.',
+     tickets:'NMS-11700, NMS-11930, NMS-11357, NMS-11398, NMS-11323, NMS-11328, NMS-11920, NMS-11935'},
+    {color:'var(--wmt-warn)',title:'SAGLS — "Acknowledged-Stuck Orders": 40+ Tickets/Day, Same Bug',
+     body:'Sam\'s Club order fulfillment has a state machine bug where orders get stuck in ACKNOWLEDGED status and never transition to WAVING/RELEASED. The support team creates individual Jira tickets per member complaint (2,118 "Receiving" incidents total) instead of filing one platform bug. This single fix could eliminate hundreds of tickets.',
+     tickets:'SAGLS-10262, 10261, 10260, 10259, 10258, 10255, 10233, 10231, 10226, 10221... (40+ daily)'},
+    {color:'var(--wmt-warn)',title:'DC 6001 + DC 6938 — DCFin/OSDR/GDIS Financial Pipeline: Platform-Level Bug',
+     body:'Same financial posting pipeline (OSDR → DCFin → GDIS → SAP) is failing at TWO separate DCs. DC 6001: Invoice not generated, sales not persisting, VTR adjustment failing. DC 6938: OSDR received qty incorrect, DCFin not updated. Two DCs = platform code bug, not DC config.',
+     tickets:'GLSMAV-86977, 86850, 86493, 85965 (DC 6001) | GLSMAV-86927, 86805, 86803, 86725 (DC 6938)'},
+    {color:'var(--wmt-blue)',title:'DC 2675 Belvidere GCC — Load State Machine Locking',
+     body:'5+ tickets about loads stuck in "in-progress" state. Create load, delete load, and putaway requests all fail to transition cleanly. One ticket is actively BLOCKED. All bugs owned by same engineer under same Epic — this is a known systemic issue not yet resolved.',
+     tickets:'GLSMAV-87075, 87011, 86984, 87080, 87084 (BLOCKED)'},
   ];
-  document.getElementById('rolloutTable').innerHTML = rollouts.map(([dc,tech,proj,stat])=>`
-    <tr><td class="px-3 py-2 text-xs font-semibold">${dc}</td>
-    <td class="px-3 py-2 text-xs">${tech}</td>
-    <td class="px-3 py-2 text-xs font-mono" style="color:var(--wmt-blue)">${proj}</td>
-    <td class="px-3 py-2 text-xs">${stat}</td></tr>`).join('');
+  document.getElementById('chronicCards').innerHTML = chronic.map(({color,title,body,tickets})=>`
+    <div class="rounded-lg p-4" style="border-left:4px solid ${color};background:var(--wmt-subtle)">
+      <p class="font-semibold text-sm mb-1" style="color:${color}">${title}</p>
+      <p class="text-xs text-gray-700 mb-2">${body}</p>
+      <p class="text-xs font-mono" style="color:var(--wmt-blue)">🎫 ${tickets}</p>
+    </div>`).join('');
+
+  // Stale Bug Table
+  const stale = [
+    ['GLSMAV-723','Loading: Slow publishing rate from Loading to Inventory','Years','In Progress QA','🚨 High — performance'],
+    ['GLSMAV-860','OTN count mismatch in Order Services','Years','Backlog','🚨 High'],
+    ['NMS-9185','Duplicate LPN from pallets received 1+ year ago','60+ days','Backlog','🚨 High — inventory integrity'],
+    ['NMS-9064','Invoice Processing Issue at DC 6082 — Weekend Incident','60+ days','Backlog','🚨 High — financial'],
+    ['NMS-9930','OF sending duplicate PUTs to Intelligrated','60+ days','Backlog','🟠 High — automation'],
+    ['GLSMAV-85884','GDM Performance Degradation with Kafka','Months','Backlog','🚨 High — platform-wide'],
+    ['NMS-5837','Wrong target station sent to Knapp','Old','Backlog','🟠 High — automation'],
+    ['IUF-36621','CA HVDC 7088 Overage scenarios not working','Weeks','BLOCKED','🚨 High'],
+    ['GLSMAV-87084','Belvidere GCC — LOD pallet missed next release','Days','BLOCKED','🚨 High — live ops impact'],
+    ['GLSMAV-3024','MCB App inappropriate error messages','Years','Backlog','🟡 Medium'],
+  ];
+  const stClass = s => s==='BLOCKED'?'s-block':s.includes('QA')||s.includes('Dev')?'s-prog':'s-open';
+  document.getElementById('staleTable').innerHTML = stale.map(([id,sum,age,stat,risk])=>`
+    <tr><td class="font-mono text-xs font-semibold" style="color:var(--wmt-blue)">${id}</td>
+    <td class="text-xs">${sum}</td><td class="text-xs font-semibold">${age}</td>
+    <td><span class="badge ${stClass(stat)}">${stat}</span></td>
+    <td class="text-xs">${risk}</td></tr>`).join('');
+
+  // Action Cards
+  const actions = [
+    {urgency:'🔴 This Week',color:'var(--wmt-red)',items:[
+      'Assign a tiger team to DC 2470 GDC Breakpack — 141 tickets, 5 subsystems broken. Needs dedicated root cause sprint, not individual triage.',
+      'File a single P1 platform bug for SAGLS Acknowledged-Stuck Orders and stop allowing 40+ individual tickets/day for the same issue.',
+      'Escalate DC 6001 + DC 6938 DCFin/OSDR failures to DCFin team together — two DCs hit the same pipeline = platform-level bug.',
+    ]},
+    {urgency:'🟠 This Sprint',color:'var(--wmt-warn)',items:[
+      'Unblock GLSMAV-87084 at DC 2675 Belvidere — LOD pallets being missed in releases is live operational impact.',
+      'Run a stale bug triage week for the 3,191 60+ day open bugs — accept-as-wont-fix or assign to sprint. NMS-9185 and NMS-9064 are highest risk.',
+      'Audit DC 8980 (Dev3) environment config — 15+ bugs are config masquerading as code defects. Save dev time.',
+    ]},
+    {urgency:'📈 Process Improvements',color:'var(--wmt-blue)',items:[
+      'Mandate S1/S2/S3/S4 severity field on ALL bug tickets across NMS, IUF, GLSMAV, SAGLS, BLACKBIRD — SLA tracking is impossible without it.',
+      'Add human triage requirement for GLSMAV "EndToEnd Automation" bot-filed bugs within 48 hours of creation.',
+      'Track "Bugs Created vs. Bugs Resolved" as a weekly KPI — +41% bug rate in 3 months is an early quality crisis signal.',
+      'Once BigQuery access is confirmed, build real-time KPI queries for message health across Symbotic, Intelligrated, and Honeywell.',
+    ]},
+  ];
+  document.getElementById('actionCards').innerHTML = actions.map(({urgency,color,items})=>`
+    <div class="rounded-lg p-4" style="border-left:4px solid ${color};background:var(--wmt-subtle)">
+      <p class="font-bold text-sm mb-2" style="color:${color}">${urgency}</p>
+      <ul class="space-y-1">${items.map(i=>`<li class="text-xs text-gray-700">• ${i}</li>`).join('')}</ul>
+    </div>`).join('');
 </script>
 </body>
 </html>
